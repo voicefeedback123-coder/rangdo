@@ -102,6 +102,13 @@ header{
 @keyframes dash{to{stroke-dashoffset:-18}}
 .anim{animation:dash .55s linear infinite}
 .badge-lbl{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);background:rgba(20,16,12,.72);color:#fff;padding:4px 13px;border-radius:20px;font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;backdrop-filter:blur(10px);pointer-events:none;white-space:nowrap}
+.colour-summary{position:absolute;top:8px;right:8px;background:rgba(10,8,6,0.78);backdrop-filter:blur(10px);border-radius:10px;padding:7px 10px;display:none;flex-direction:column;gap:4px;min-width:130px;max-width:160px}
+.colour-summary.visible{display:flex}
+.cs-row{display:flex;align-items:center;gap:6px}
+.cs-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;border:1px solid rgba(255,255,255,0.2)}
+.cs-info{display:flex;flex-direction:column;gap:0px}
+.cs-label{font-size:0.48rem;color:rgba(255,255,255,0.55);letter-spacing:0.8px;text-transform:uppercase;line-height:1}
+.cs-code{font-size:0.58rem;color:#fff;font-weight:600;letter-spacing:0.3px;line-height:1.3}
 
 /* ── PRESETS ROW ── */
 .presets-row{display:flex;gap:7px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
@@ -142,8 +149,11 @@ header{
 .grp{margin-bottom:14px}
 .glbl{font-size:0.58rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);padding:7px 0 5px}
 .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
-.chip{aspect-ratio:1;border-radius:7px;cursor:pointer;border:2px solid transparent;transition:all .12s;min-height:44px}
+.chip{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;border:2px solid transparent;transition:all .12s;background:transparent!important;padding-bottom:2px;border-radius:7px}
+.chip-color{width:100%;aspect-ratio:1;border-radius:5px;flex-shrink:0}
+.chip-code{font-size:0.42rem;color:#5a4f48;font-weight:600;letter-spacing:0.2px;text-align:center;line-height:1;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 1px}
 .chip.on{border-color:var(--text);transform:scale(1.14);box-shadow:0 4px 16px rgba(0,0,0,0.22);z-index:2;position:relative}
+.chip.on .chip-code{color:var(--text);font-weight:700}
 .chip:active{transform:scale(.88)}
 
 /* ── TOAST ── */
@@ -620,6 +630,7 @@ header{
 <text x="350" y="385" text-anchor="middle" font-size="9" fill="rgba(0,0,0,0.09)" font-family="Outfit,sans-serif" letter-spacing="2.5" pointer-events="none">FLOOR</text>
 </svg>
 <div class="badge-lbl" id="badge">Koi bhi deewar chuniye</div>
+<div class="colour-summary" id="colourSummary"></div>
 </div>
 
 <!-- COLOUR BAR -->
@@ -1093,7 +1104,37 @@ function paint(code){
   document.getElementById('cName').textContent=m.n;
   document.getElementById('cCode').textContent=m.c;
   draw();
+  updateSummary();
   toast('✓ '+m.n+' on '+SL[S.s]);
+}
+
+function updateSummary(){
+  var panel=document.getElementById('colourSummary');
+  var rows=[];
+  // Walls — check if all same
+  var walls=['back','left','right'];
+  var wallColors=walls.map(function(w){return S.sc[w];});
+  var allSame=wallColors.every(function(h){return h===wallColors[0];});
+  var getInfo=function(h){return C.find(function(x){return x.h.toLowerCase()===h.toLowerCase();});};
+  if(allSame){
+    var m=getInfo(wallColors[0]);
+    rows.push({label:'Walls',hex:wallColors[0],code:m?m.c:wallColors[0],name:m?m.n:''});
+  } else {
+    ['back','left','right'].forEach(function(w){
+      var m=getInfo(S.sc[w]);
+      rows.push({label:SL[w],hex:S.sc[w],code:m?m.c:S.sc[w],name:m?m.n:''});
+    });
+  }
+  // Ceiling
+  var cm=getInfo(S.sc.ceiling);
+  rows.push({label:'Ceiling',hex:S.sc.ceiling,code:cm?cm.c:S.sc.ceiling,name:cm?cm.n:''});
+  // Build HTML
+  var html='';
+  rows.forEach(function(r){
+    html+='<div class="cs-row"><div class="cs-dot" style="background:'+r.hex+'"></div><div class="cs-info"><div class="cs-label">'+r.label+'</div><div class="cs-code">'+r.code+(r.name?' · '+r.name:'')+'</div></div></div>';
+  });
+  panel.innerHTML=html;
+  panel.classList.add('visible');
 }
 
 function applyAll(){
@@ -1111,6 +1152,7 @@ function applyAll(){
     var dot=document.getElementById('d-'+sf); if(dot) dot.style.background=S.last.h;
   });
   draw();
+  updateSummary();
   toast('✓ '+S.last.n+' on '+(surfs.length>1?'all walls':SL[S.s]));
 }
 
@@ -1150,7 +1192,7 @@ function draw(){
     html+='<div class="grp"><div class="glbl">'+(GL[k]||k)+'</div><div class="grid">';
     g[k].forEach(function(x){
       var on=x.h.toLowerCase()===cur?' on':'';
-      html+='<div class="chip'+on+'" style="background:'+x.h+'" title="'+x.n+' ('+x.c+')" onclick="paint(\''+x.c.replace(/'/g,"\\'")+'\')" role="button" aria-label="'+x.n+'"></div>';
+      html+='<div class="chip'+on+'" title="'+x.n+' ('+x.c+')" onclick="paint(\''+x.c.replace(/'/g,"\\'")+'\')" role="button" aria-label="'+x.n+'"><div class="chip-color" style="background:'+x.h+'"></div><div class="chip-code">'+x.c+'</div></div>';
     });
     html+='</div></div>';
   });
@@ -1181,6 +1223,7 @@ function applyPreset(key){
   document.getElementById('cName').textContent=key.charAt(0).toUpperCase()+key.slice(1)+' Preset';
   document.getElementById('cCode').textContent='Tap a chip to customise';
   draw();
+  updateSummary();
   toast('✓ '+key.charAt(0).toUpperCase()+key.slice(1)+' preset applied');
 }
 
