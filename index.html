@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>RangDo — Ghar Ko Rang Do</title>
+<meta name="description" content="RangDo — Apne ghar ko apna rang do. India ka sabse aasaan wall colour visualizer. Rang chuniye aur ghar mein dekho!">
+<meta name="keywords" content="wall colour, ghar rang, paint visualizer, Asian Paints, India, rang do">
+<meta property="og:title" content="RangDo — Ghar Ko Rang Do">
+<meta property="og:description" content="Apne ghar ki deewar ka rang chuniye — bilkul free!">
+<meta name="theme-color" content="#8b6f47">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#f7f4f0;--card:#fff;--text:#1a1714;--muted:#a89f95;--accent:#8b6f47;--border:#e8e2db}
+html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;max-width:100vw;width:100%;-webkit-text-size-adjust:100%}
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(135deg,#fff 60%,#fdf3f0 100%);
+  padding:14px 18px 16px;
+  border-bottom:2px solid #f0e0d8;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:300;
+  box-shadow:0 3px 16px rgba(180,60,40,0.08);
+  min-height:72px;
+}
+.logo-wrap{display:flex;align-items:center;gap:13px}
+.logo-icon{
+  width:50px;height:50px;
+  background:linear-gradient(145deg,#c0392b,#e74c3c);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  box-shadow:0 4px 14px rgba(192,57,43,0.4),inset 0 1px 0 rgba(255,255,255,0.2);
+  position:relative;overflow:hidden;
+}
+.logo-icon::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,0.18),transparent);
+  border-radius:14px 14px 0 0;
+}
+.logo-icon svg{width:28px;height:28px;position:relative;z-index:1}
+.logo-text{display:flex;flex-direction:column;gap:3px}
+.logo-main{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.9rem;font-weight:600;
+  letter-spacing:-0.8px;line-height:1;
+  color:#1a1714;
+}
+.logo-main em{
+  color:#c0392b;font-style:normal;
+  text-shadow:0 1px 3px rgba(192,57,43,0.2);
+}
+.logo-sub{
+  font-size:0.88rem;
+  color:#c0392b;
+  letter-spacing:0.3px;
+  font-weight:600;
+  line-height:1.35;
+  font-family:'Outfit',sans-serif;
+  text-transform:none;
+}
+.logo-sub .line2{
+  display:block;
+  font-size:0.62rem;
+  color:#b0a098;
+  font-weight:400;
+  letter-spacing:0.2px;
+  margin-top:1px;
+}
+.badge{display:flex;align-items:center}
+.wa-share{
+  display:flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  border-radius:22px;
+  padding:8px 14px 8px 10px;
+  text-decoration:none;
+  box-shadow:0 3px 12px rgba(37,211,102,0.35);
+  transition:transform 0.15s,box-shadow 0.15s;
+  border:none;cursor:pointer;
+}
+.wa-share:active{transform:scale(0.96);box-shadow:0 1px 6px rgba(37,211,102,0.25)}
+.wa-share svg{width:20px;height:20px;flex-shrink:0}
+.wa-share span{font-size:0.72rem;font-weight:600;color:white;letter-spacing:0.5px}
+
+/* ── ROOM TABS ── */
+.rtabs{display:flex;background:var(--card);border-bottom:1px solid var(--border)}
+.rtab{flex:1;padding:11px 4px;text-align:center;font-size:0.68rem;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;border:none;background:transparent;cursor:pointer;color:var(--muted);border-bottom:2.5px solid transparent;transition:all .2s;font-family:'Outfit',sans-serif;min-height:44px}
+.rtab.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ── STAGE ── */
+.stage{width:100%;position:relative;background:#2a2520;overflow:hidden;line-height:0}
+.stage svg{width:100%;display:block;max-height:72vw}
+.clickable{cursor:pointer;transition:filter .12s}
+.clickable:hover{filter:brightness(1.04)}
+@keyframes dash{to{stroke-dashoffset:-18}}
+.anim{animation:dash .55s linear infinite}
+.badge-lbl{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);background:rgba(20,16,12,.72);color:#fff;padding:4px 13px;border-radius:20px;font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;backdrop-filter:blur(10px);pointer-events:none;white-space:nowrap}
+
+/* ── PRESETS ROW ── */
+.presets-row{display:flex;gap:7px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+.presets-row::-webkit-scrollbar{display:none}
+.preset-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;flex-shrink:0;transition:all .15s;font-family:'Outfit',sans-serif;min-height:44px;justify-content:center}
+.preset-btn:active{transform:scale(.94)}
+.preset-swatches{display:flex;gap:2px}
+.preset-swatch{width:12px;height:12px;border-radius:3px}
+.preset-label{font-size:0.6rem;color:var(--muted);letter-spacing:.3px;white-space:nowrap}
+.preset-btn.on{border-color:var(--accent)}
+
+/* ── COLOUR BAR ── */
+.cbar{display:flex;align-items:center;gap:11px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--border)}
+.swatch{width:44px;height:44px;border-radius:10px;flex-shrink:0;border:1.5px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.1);transition:background .25s}
+.cmeta{flex:1;min-width:0}
+.cmeta h3{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmeta p{font-size:0.66rem;color:var(--muted);font-weight:300;margin-top:1px}
+.btn-all{padding:9px 14px;background:var(--accent);color:#fff;border:none;border-radius:20px;font-size:0.7rem;font-weight:500;cursor:pointer;white-space:nowrap;font-family:'Outfit',sans-serif;transition:all .15s;min-height:40px;flex-shrink:0}
+.btn-all:active{transform:scale(.94)}
+
+/* ── SURFACE BUTTONS ── */
+.srow{display:flex;padding:7px 10px;gap:5px;background:var(--bg);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.srow::-webkit-scrollbar{display:none}
+.sbtn{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:9px;border:1.5px solid var(--border);background:var(--card);font-size:0.68rem;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:'Outfit',sans-serif;transition:all .15s;min-height:40px}
+.sbtn.on{border-color:var(--accent);background:#fdf8f2}
+.dot{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,0.12);flex-shrink:0;transition:background .2s}
+
+/* ── PALETTE ── */
+.pal{background:var(--card);padding:0 13px 100px}
+.ph{padding:12px 0 8px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600}
+.search{display:flex;align-items:center;gap:7px;background:var(--bg);border-radius:9px;padding:9px 12px;margin-bottom:8px;border:1px solid var(--border)}
+.search input{border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:.82rem;width:100%;outline:none;color:var(--text);font-weight:300;min-height:24px}
+.search input::placeholder{color:var(--muted)}
+.cats{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+.cats::-webkit-scrollbar{display:none}
+.pill{padding:6px 12px;border-radius:14px;border:1.5px solid var(--border);font-size:0.66rem;cursor:pointer;white-space:nowrap;background:transparent;font-weight:400;font-family:'Outfit',sans-serif;transition:all .15s;min-height:34px;flex-shrink:0}
+.pill.on{background:var(--text);color:#fff;border-color:var(--text)}
+.grp{margin-bottom:14px}
+.glbl{font-size:0.58rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);padding:7px 0 5px}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.chip{aspect-ratio:1;border-radius:7px;cursor:pointer;border:2px solid transparent;transition:all .12s;min-height:44px}
+.chip.on{border-color:var(--text);transform:scale(1.14);box-shadow:0 4px 16px rgba(0,0,0,0.22);z-index:2;position:relative}
+.chip:active{transform:scale(.88)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(12px);background:rgba(20,16,12,.84);color:#fff;padding:7px 17px;border-radius:20px;font-size:.7rem;backdrop-filter:blur(10px);opacity:0;transition:all .22s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── MOBILE OVERRIDES ── */
+@media(max-width:400px){
+  .grid{grid-template-columns:repeat(5,1fr)}
+  .chip{min-height:52px}
+  .logo-main{font-size:1.6rem}
+  .logo-icon{width:44px;height:44px;border-radius:12px}
+  .logo-icon svg{width:24px;height:24px}
+  .logo-sub{font-size:0.75rem}
+  .logo-sub .line2{font-size:0.55rem}
+  header{min-height:64px;padding:12px 14px 13px}
+  .cbar{padding:9px 11px;gap:8px}
+  .swatch{width:38px;height:38px}
+}
+@media(min-width:600px){
+  .grid{grid-template-columns:repeat(8,1fr)}
+  .stage svg{max-height:56vw}
+}
+@media(min-width:900px){
+  .grid{grid-template-columns:repeat(10,1fr)}
+  body{max-width:520px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,0.12)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- House body -->
+        <path d="M2 11L12 2L22 11V21C22 21.55 21.55 22 21 22H16V16C16 15.45 15.55 15 15 15H9C8.45 15 8 15.45 8 16V22H3C2.45 22 2 21.55 2 21V11Z" fill="white"/>
+        <!-- Door -->
+        <rect x="9.5" y="16" width="5" height="6" rx="1" fill="rgba(192,57,43,0.25)"/>
+        <!-- Roof shine -->
+        <path d="M2 11L12 2L22 11" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <!-- Paint brush stroke on house wall -->
+        <path d="M11 10C11 10 12 9 14 10.5C15 11.2 14.5 12.5 13 12.5C11.5 12.5 11 11.5 12 11" stroke="rgba(192,57,43,0.6)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <div class="logo-main">Rang<em>Do</em></div>
+      <div class="logo-sub">अपने घर को मनपसंद रंग दो<span class="line2">दीवार चुनिये · रंग लगाइये · घर सजाइये</span></div>
+    </div>
+  </div>
+  <div class="badge">
+    <a class="wa-share" href="https://wa.me/?text=🏠%20*RangDo*%20-%20Apne%20ghar%20ki%20deewar%20ka%20rang%20chuniye!%0A%0AGhar%20baithke%20dekho%20kaisa%20lagega%20rang%20deewar%20par%20%F0%9F%8E%A8%0A%0A👉%20rangdo.in%0A%0A_Bilkul%20free%20hai!_" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="white"/>
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <span>Share</span>
+    </a>
+  </div>
+</header>
+
+<div class="rtabs">
+  <button class="rtab on" onclick="setRoom('living',this)">Living Room</button>
+  <button class="rtab" onclick="setRoom('bedroom',this)">Bedroom</button>
+  <button class="rtab" onclick="setRoom('kitchen',this)">Kitchen</button>
+</div>
+
+<div class="presets-row" id="presets-row">
+  <button class="preset-btn" onclick="applyPreset('scandi')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#f5f0eb"></div><div class="preset-swatch" style="background:#faf8f4"></div><div class="preset-swatch" style="background:#c8a878"></div><div class="preset-swatch" style="background:#e8e0d4"></div></div>
+    <div class="preset-label">Scandinavian</div>
+  </button>
+  <button class="preset-btn" onclick="applyPreset('japandi')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#e0d8cc"></div><div class="preset-swatch" style="background:#f0ece4"></div><div class="preset-swatch" style="background:#a87858"></div><div class="preset-swatch" style="background:#c8c0b0"></div></div>
+    <div class="preset-label">Japandi</div>
+  </button>
+  <button class="preset-btn" onclick="applyPreset('terra')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#c97355"></div><div class="preset-swatch" style="background:#f0e8de"></div><div class="preset-swatch" style="background:#b09870"></div><div class="preset-swatch" style="background:#e8d8cc"></div></div>
+    <div class="preset-label">Terracotta</div>
+  </button>
+  <button class="preset-btn" onclick="applyPreset('navy')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#2a3a4e"></div><div class="preset-swatch" style="background:#f0ede8"></div><div class="preset-swatch" style="background:#c0a878"></div><div class="preset-swatch" style="background:#d8d0c8"></div></div>
+    <div class="preset-label">Moody Navy</div>
+  </button>
+  <button class="preset-btn" onclick="applyPreset('sage')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#9aab90"></div><div class="preset-swatch" style="background:#f2ede6"></div><div class="preset-swatch" style="background:#b8a070"></div><div class="preset-swatch" style="background:#ddddd8"></div></div>
+    <div class="preset-label">Sage Green</div>
+  </button>
+  <button class="preset-btn" onclick="applyPreset('blush')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#e8c8b8"></div><div class="preset-swatch" style="background:#faf5f0"></div><div class="preset-swatch" style="background:#c8a060"></div><div class="preset-swatch" style="background:#f0e0d4"></div></div>
+    <div class="preset-label">Blush &amp; Gold</div>
+  </button>
+  <button class="preset-btn" onclick="applyPreset('grey')">
+    <div class="preset-swatches"><div class="preset-swatch" style="background:#8a8f98"></div><div class="preset-swatch" style="background:#f4f4f2"></div><div class="preset-swatch" style="background:#6b5a48"></div><div class="preset-swatch" style="background:#e4e4e0"></div></div>
+    <div class="preset-label">Cool Grey</div>
+  </button>
+</div>
+
+<div class="stage" id="stage">
+<svg id="svg" viewBox="0 0 700 440" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern id="p-wood" x="0" y="0" width="70" height="14" patternUnits="userSpaceOnUse">
+  <rect width="70" height="14" fill="#b8a882"/>
+  <rect x=".5" y=".5" width="69" height="13" fill="#c4b08e" rx=".5"/>
+  <rect x=".5" y=".5" width="69" height="3" fill="rgba(255,255,255,0.09)"/>
+  <rect x=".5" y="10" width="69" height="3" fill="rgba(0,0,0,0.04)"/>
+  <line x1="35" y1="0" x2="35" y2="14" stroke="rgba(0,0,0,0.04)" stroke-width=".6"/>
+  <line x1="0" y1="13.5" x2="70" y2="13.5" stroke="rgba(0,0,0,0.07)" stroke-width=".5"/>
+</pattern>
+<pattern id="p-tile" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+  <rect width="28" height="28" fill="#d2cdc5"/>
+  <rect x="1" y="1" width="26" height="26" fill="#ddd8d0"/>
+  <rect x="1" y="1" width="26" height="4" fill="rgba(255,255,255,0.1)"/>
+  <rect x="1" y="23" width="26" height="4" fill="rgba(0,0,0,0.03)"/>
+</pattern>
+<pattern id="p-marble" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+  <rect width="50" height="50" fill="#e8e4de"/>
+  <rect x=".5" y=".5" width="49" height="49" fill="#ede9e3"/>
+  <line x1="0" y1="0" x2="25" y2="25" stroke="rgba(180,172,162,0.14)" stroke-width="1.2"/>
+  <line x1="50" y1="0" x2="25" y2="25" stroke="rgba(180,172,162,0.08)" stroke-width=".7"/>
+  <line x1="0" y1="25" x2="50" y2="25" stroke="rgba(180,172,162,0.06)" stroke-width=".4"/>
+</pattern>
+<linearGradient id="g-left-shade" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="rgba(0,0,0,.28)"/><stop offset="55%" stop-color="rgba(0,0,0,.09)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+</linearGradient>
+<linearGradient id="g-right-shade" x1="1" y1="0" x2="0" y2="0">
+  <stop offset="0%" stop-color="rgba(0,0,0,.24)"/><stop offset="55%" stop-color="rgba(0,0,0,.07)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+</linearGradient>
+<linearGradient id="g-floor-depth" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="rgba(0,0,0,.22)"/><stop offset="40%" stop-color="rgba(0,0,0,.07)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+</linearGradient>
+<linearGradient id="g-ceil-depth" x1="0" y1="1" x2="0" y2="0">
+  <stop offset="0%" stop-color="rgba(0,0,0,.12)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+</linearGradient>
+<linearGradient id="g-back-light" x1=".5" y1="0" x2=".5" y2="1">
+  <stop offset="0%" stop-color="rgba(255,255,255,.05)"/><stop offset="100%" stop-color="rgba(0,0,0,.05)"/>
+</linearGradient>
+<linearGradient id="g-sofa-seat" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#e6dfd6"/><stop offset="60%" stop-color="#d9d1c7"/><stop offset="100%" stop-color="#cbc3b9"/>
+</linearGradient>
+<linearGradient id="g-sofa-back" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#ddd5cc"/><stop offset="100%" stop-color="#cec6bc"/>
+</linearGradient>
+<linearGradient id="g-sofa-arm-l" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#c4bdb4"/><stop offset="100%" stop-color="#d4ccc3"/>
+</linearGradient>
+<linearGradient id="g-sofa-arm-r" x1="1" y1="0" x2="0" y2="0">
+  <stop offset="0%" stop-color="#c4bdb4"/><stop offset="100%" stop-color="#d4ccc3"/>
+</linearGradient>
+<linearGradient id="g-chair-b" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#6a8ec8"/><stop offset="100%" stop-color="#4a6eb0"/>
+</linearGradient>
+<linearGradient id="g-chair-side" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#3a5ea0"/><stop offset="100%" stop-color="#4a6eb0"/>
+</linearGradient>
+<linearGradient id="g-wood-walnut" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#4a3020"/><stop offset="45%" stop-color="#6a4828"/><stop offset="100%" stop-color="#523820"/>
+</linearGradient>
+<linearGradient id="g-wood-light" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#8c6840"/><stop offset="50%" stop-color="#9c7848"/><stop offset="100%" stop-color="#7c5830"/>
+</linearGradient>
+<linearGradient id="g-wood-top" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#a07848"/><stop offset="100%" stop-color="#906838"/>
+</linearGradient>
+<linearGradient id="g-hb" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#8a6644"/><stop offset="30%" stop-color="#9a7654"/><stop offset="100%" stop-color="#6a4828"/>
+</linearGradient>
+<linearGradient id="g-hb-panel" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/><stop offset="100%" stop-color="rgba(0,0,0,0.06)"/>
+</linearGradient>
+<linearGradient id="g-duvet" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#f4efe8"/><stop offset="50%" stop-color="#ece6de"/><stop offset="100%" stop-color="#e0d9d0"/>
+</linearGradient>
+<linearGradient id="g-duvet-fold" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#faf8f4"/><stop offset="100%" stop-color="#f0ece5"/>
+</linearGradient>
+<linearGradient id="g-pillow" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#faf8f5"/><stop offset="50%" stop-color="#f4f0ea"/><stop offset="100%" stop-color="#e8e3dc"/>
+</linearGradient>
+<linearGradient id="g-pillow-deco" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#b8a8c8"/><stop offset="100%" stop-color="#987898"/>
+</linearGradient>
+<linearGradient id="g-mattress" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#ede8e2"/><stop offset="100%" stop-color="#e0dbd4"/>
+</linearGradient>
+<linearGradient id="g-nstand" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#7a5a38"/><stop offset="50%" stop-color="#9a7a50"/><stop offset="100%" stop-color="#6a4a28"/>
+</linearGradient>
+<linearGradient id="g-nstand-top" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#b08858"/><stop offset="100%" stop-color="#986840"/>
+</linearGradient>
+<radialGradient id="g-lampshade" cx="50%" cy="35%" r="65%">
+  <stop offset="0%" stop-color="#fff9e8"/><stop offset="60%" stop-color="#f5e8b8"/><stop offset="100%" stop-color="#e0c878"/>
+</radialGradient>
+<radialGradient id="g-glow" cx="50%" cy="0%" r="80%">
+  <stop offset="0%" stop-color="rgba(255,245,180,0.6)"/><stop offset="100%" stop-color="rgba(255,245,180,0)"/>
+</radialGradient>
+<linearGradient id="g-curtain" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#c8a870"/><stop offset="30%" stop-color="#d8b880"/><stop offset="60%" stop-color="#c0a068"/><stop offset="100%" stop-color="#d0b078"/>
+</linearGradient>
+<linearGradient id="g-glass" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="rgba(210,238,255,0.55)"/><stop offset="40%" stop-color="rgba(230,248,255,0.28)"/><stop offset="100%" stop-color="rgba(200,230,255,0.45)"/>
+</linearGradient>
+<radialGradient id="g-glass-shine" cx="30%" cy="20%" r="50%">
+  <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+</radialGradient>
+<linearGradient id="g-tv-frame" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#2a2a30"/><stop offset="100%" stop-color="#1a1a20"/>
+</linearGradient>
+<linearGradient id="g-tv-screen" x1="0.2" y1="0" x2="0.8" y2="1">
+  <stop offset="0%" stop-color="#1a2a40"/><stop offset="50%" stop-color="#0e1828"/><stop offset="100%" stop-color="#080e18"/>
+</linearGradient>
+<linearGradient id="g-tv-unit" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#8a6848"/><stop offset="40%" stop-color="#9a7858"/><stop offset="100%" stop-color="#6a4828"/>
+</linearGradient>
+<linearGradient id="g-wrd" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#5e4428"/><stop offset="35%" stop-color="#8a6848"/><stop offset="65%" stop-color="#9a7858"/><stop offset="100%" stop-color="#6a4c30"/>
+</linearGradient>
+<linearGradient id="g-wrd-door" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/><stop offset="100%" stop-color="rgba(0,0,0,0.08)"/>
+</linearGradient>
+<linearGradient id="g-cabinet" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#f8f7f4"/><stop offset="100%" stop-color="#edebe6"/>
+</linearGradient>
+<linearGradient id="g-counter" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#c8b898"/><stop offset="50%" stop-color="#b8a888"/><stop offset="100%" stop-color="#a89878"/>
+</linearGradient>
+<linearGradient id="g-steel" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#c8c8cc"/><stop offset="50%" stop-color="#b0b0b8"/><stop offset="100%" stop-color="#989898"/>
+</linearGradient>
+<linearGradient id="g-mirror" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="rgba(220,235,245,0.5)"/><stop offset="50%" stop-color="rgba(235,245,255,0.25)"/><stop offset="100%" stop-color="rgba(210,225,240,0.4)"/>
+</linearGradient>
+<radialGradient id="g-rug" cx="50%" cy="50%" r="50%">
+  <stop offset="0%" stop-color="rgba(180,158,128,0.35)"/><stop offset="100%" stop-color="rgba(160,138,108,0.15)"/>
+</radialGradient>
+<filter id="f-md" x="-20%" y="-15%" width="150%" height="150%">
+  <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="rgba(0,0,0,0.25)"/>
+</filter>
+<filter id="f-sm" x="-12%" y="-10%" width="135%" height="135%">
+  <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.18)"/>
+</filter>
+<filter id="f-lg" x="-25%" y="-15%" width="160%" height="165%">
+  <feDropShadow dx="3" dy="8" stdDeviation="8" flood-color="rgba(0,0,0,0.32)"/>
+</filter>
+<filter id="f-xs" x="-8%" y="-8%" width="125%" height="125%">
+  <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="rgba(0,0,0,0.14)"/>
+</filter>
+</defs>
+
+<!-- ROOM SHELL -->
+<polygon id="s-ceiling" class="clickable" points="0,0 700,0 510,130 190,130" fill="#f7f4ef" onclick="sel('ceiling')"/>
+<polygon points="0,0 700,0 510,130 190,130" fill="url(#g-ceil-depth)" pointer-events="none"/>
+<polygon points="0,0 190,130 195,137 0,7" fill="rgba(255,255,255,0.28)" pointer-events="none"/>
+<polygon points="700,0 510,130 515,137 700,7" fill="rgba(255,255,255,0.22)" pointer-events="none"/>
+<polygon points="190,130 510,130 515,137 195,137" fill="rgba(255,255,255,0.18)" pointer-events="none"/>
+<polygon id="s-back" class="clickable" points="190,130 510,130 510,315 190,315" fill="#ece5dc" onclick="sel('back')"/>
+<polygon points="190,130 510,130 510,315 190,315" fill="url(#g-back-light)" pointer-events="none"/>
+<polygon id="s-left" class="clickable" points="0,0 190,130 190,315 0,440" fill="#e3dbd1" onclick="sel('left')"/>
+<polygon points="0,0 190,130 190,315 0,440" fill="url(#g-left-shade)" pointer-events="none"/>
+<polygon id="s-right" class="clickable" points="700,0 510,130 510,315 700,440" fill="#e8e1d7" onclick="sel('right')"/>
+<polygon points="700,0 510,130 510,315 700,440" fill="url(#g-right-shade)" pointer-events="none"/>
+<polygon id="s-floor" class="clickable" points="0,440 700,440 510,315 190,315" fill="url(#p-wood)" onclick="sel('floor')"/>
+<polygon points="0,440 700,440 510,315 190,315" fill="url(#g-floor-depth)" pointer-events="none"/>
+<polygon points="190,309 510,309 510,315 190,315" fill="rgba(255,255,255,0.42)" pointer-events="none"/>
+<polygon points="0,434 190,315 190,309 0,428" fill="rgba(255,255,255,0.32)" pointer-events="none"/>
+<polygon points="700,434 510,315 510,309 700,428" fill="rgba(255,255,255,0.28)" pointer-events="none"/>
+<line x1="190" y1="130" x2="190" y2="315" stroke="rgba(0,0,0,0.1)" stroke-width="1" pointer-events="none"/>
+<line x1="510" y1="130" x2="510" y2="315" stroke="rgba(0,0,0,0.1)" stroke-width="1" pointer-events="none"/>
+<line x1="190" y1="315" x2="0" y2="440" stroke="rgba(0,0,0,0.07)" stroke-width=".7" pointer-events="none"/>
+<line x1="510" y1="315" x2="700" y2="440" stroke="rgba(0,0,0,0.07)" stroke-width=".7" pointer-events="none"/>
+
+<!-- LIVING ROOM -->
+<g id="rm-living">
+<polygon points="20,330 145,255 230,390 70,440" fill="rgba(220,238,255,0.13)" pointer-events="none"/>
+<polygon points="25,48 148,118 148,272 25,348" fill="rgba(255,255,255,0.55)" pointer-events="none"/>
+<polygon points="30,54 86,85 86,268 30,342" fill="url(#g-glass)" pointer-events="none"/>
+<polygon points="90,85 144,115 144,270 90,270" fill="url(#g-glass)" pointer-events="none"/>
+<polygon points="25,48 30,51 30,342 25,348" fill="rgba(255,255,255,0.85)" pointer-events="none"/>
+<polygon points="25,48 148,118 148,122 25,52" fill="rgba(255,255,255,0.8)" pointer-events="none"/>
+<polygon points="144,115 148,118 148,272 144,270" fill="rgba(255,255,255,0.7)" pointer-events="none"/>
+<polygon points="86,84 90,85 90,270 86,268" fill="rgba(255,255,255,0.88)" pointer-events="none"/>
+<line x1="30" y1="198" x2="86" y2="198" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" pointer-events="none"/>
+<line x1="90" y1="193" x2="144" y2="193" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" pointer-events="none"/>
+<line x1="8" y1="42" x2="165" y2="105" stroke="rgba(110,75,40,0.75)" stroke-width="3" pointer-events="none"/>
+<circle cx="8" cy="42" r="5" fill="rgba(150,105,55,0.8)" pointer-events="none"/>
+<circle cx="165" cy="105" r="5" fill="rgba(150,105,55,0.8)" pointer-events="none"/>
+<polygon points="4,38 30,38 26,355 0,362" fill="url(#g-curtain)" pointer-events="none"/>
+<polygon points="142,104 168,100 162,282 136,278" fill="url(#g-curtain)" pointer-events="none"/>
+<!-- Chandelier -->
+<line x1="350" y1="0" x2="350" y2="80" stroke="rgba(170,140,90,0.7)" stroke-width="2" pointer-events="none"/>
+<ellipse cx="350" cy="82" rx="32" ry="8" fill="rgba(190,162,108,0.75)" pointer-events="none"/>
+<line x1="350" y1="82" x2="316" y2="96" stroke="rgba(185,155,100,0.65)" stroke-width="2" pointer-events="none"/>
+<line x1="350" y1="82" x2="384" y2="96" stroke="rgba(185,155,100,0.65)" stroke-width="2" pointer-events="none"/>
+<line x1="350" y1="82" x2="328" y2="100" stroke="rgba(185,155,100,0.65)" stroke-width="2" pointer-events="none"/>
+<line x1="350" y1="82" x2="372" y2="100" stroke="rgba(185,155,100,0.65)" stroke-width="2" pointer-events="none"/>
+<ellipse cx="316" cy="99" rx="10" ry="6" fill="url(#g-lampshade)" pointer-events="none"/>
+<ellipse cx="384" cy="99" rx="10" ry="6" fill="url(#g-lampshade)" pointer-events="none"/>
+<ellipse cx="328" cy="103" rx="9" ry="5.5" fill="url(#g-lampshade)" pointer-events="none"/>
+<ellipse cx="372" cy="103" rx="9" ry="5.5" fill="url(#g-lampshade)" pointer-events="none"/>
+<ellipse cx="350" cy="90" rx="80" ry="25" fill="rgba(255,242,180,0.14)" pointer-events="none"/>
+<!-- Wall art -->
+<rect x="217" y="147" width="78" height="58" rx="3" fill="none" stroke="rgba(170,138,80,0.9)" stroke-width="3.5" pointer-events="none"/>
+<rect x="220" y="150" width="72" height="52" fill="#b8b0a4" pointer-events="none"/>
+<rect x="220" y="150" width="72" height="26" fill="#8aacc4" pointer-events="none"/>
+<polygon points="220,175 238,158 258,168 274,154 292,164 292,176" fill="#7a9888" pointer-events="none"/>
+<rect x="220" y="174" width="72" height="28" fill="#6a8860" pointer-events="none"/>
+<rect x="312" y="147" width="78" height="58" rx="3" fill="none" stroke="rgba(170,138,80,0.9)" stroke-width="3.5" pointer-events="none"/>
+<rect x="312" y="150" width="72" height="52" fill="#ccc4b8" pointer-events="none"/>
+<!-- TV unit -->
+<polygon points="535,178 696,126 696,302 535,356" fill="url(#g-tv-unit)" filter="url(#f-md)" pointer-events="none"/>
+<polygon points="538,134 692,130 692,222 538,224" fill="url(#g-tv-frame)" filter="url(#f-sm)" pointer-events="none"/>
+<polygon points="543,137 687,133 687,218 543,221" fill="url(#g-tv-screen)" pointer-events="none"/>
+<!-- Sofa -->
+<ellipse cx="290" cy="425" rx="200" ry="16" fill="rgba(0,0,0,0.13)" pointer-events="none"/>
+<rect x="96" y="308" width="366" height="56" rx="9" fill="url(#g-sofa-back)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="96" y="315" width="28" height="74" rx="7" fill="url(#g-sofa-arm-l)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="434" y="315" width="28" height="74" rx="7" fill="url(#g-sofa-arm-r)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="96" y="360" width="366" height="30" rx="5" fill="url(#g-sofa-seat)" pointer-events="none"/>
+<rect x="98" y="363" width="362" height="6" rx="3" fill="rgba(255,255,255,0.14)" pointer-events="none"/>
+<!-- Accent chair -->
+<rect x="480" y="350" width="84" height="50" rx="16" fill="rgba(58,88,152,0.82)" filter="url(#f-sm)" pointer-events="none"/>
+<ellipse cx="522" cy="397" rx="44" ry="14" fill="url(#g-chair-b)" filter="url(#f-sm)" pointer-events="none"/>
+<!-- Coffee table -->
+<rect x="195" y="304" width="226" height="16" rx="4" fill="url(#g-counter)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="196" y="307" width="224" height="11" rx="3" fill="url(#g-wood-top)" pointer-events="none"/>
+<!-- Rug -->
+<ellipse cx="310" cy="400" rx="205" ry="30" fill="url(#g-rug)" pointer-events="none"/>
+<ellipse cx="310" cy="400" rx="194" ry="27" fill="none" stroke="rgba(148,125,98,0.32)" stroke-width="2.5" pointer-events="none"/>
+<!-- Floor lamp -->
+<rect x="644" y="272" width="6" height="160" rx="3" fill="url(#g-steel)" pointer-events="none"/>
+<polygon points="622,274 672,274 666,298 628,298" fill="url(#g-lampshade)" pointer-events="none"/>
+<!-- Plant -->
+<rect x="38" y="390" width="24" height="36" rx="5" fill="rgba(148,112,72,0.6)" pointer-events="none"/>
+<ellipse cx="50" cy="390" rx="14" ry="5" fill="rgba(165,128,84,0.65)" pointer-events="none"/>
+<line x1="50" y1="388" x2="40" y2="348" stroke="rgba(52,92,42,0.7)" stroke-width="2.5" pointer-events="none"/>
+<line x1="50" y1="378" x2="62" y2="340" stroke="rgba(52,92,42,0.7)" stroke-width="2.5" pointer-events="none"/>
+<ellipse cx="38" cy="345" rx="16" ry="10" fill="rgba(64,112,52,0.65)" transform="rotate(-25,38,345)" pointer-events="none"/>
+<ellipse cx="63" cy="337" rx="15" ry="9" fill="rgba(72,120,58,0.6)" transform="rotate(20,63,337)" pointer-events="none"/>
+</g>
+
+<!-- BEDROOM -->
+<g id="rm-bedroom" style="display:none">
+<rect x="208" y="130" width="134" height="182" fill="rgba(255,255,255,0.06)" pointer-events="none"/>
+<rect x="212" y="134" width="60" height="88" fill="url(#g-glass)" pointer-events="none"/>
+<rect x="276" y="134" width="60" height="88" fill="url(#g-glass)" pointer-events="none"/>
+<rect x="212" y="226" width="60" height="80" fill="url(#g-glass)" pointer-events="none"/>
+<rect x="276" y="226" width="60" height="80" fill="url(#g-glass)" pointer-events="none"/>
+<rect x="208" y="130" width="5" height="182" fill="rgba(255,255,255,0.85)" pointer-events="none"/>
+<rect x="337" y="130" width="5" height="182" fill="rgba(255,255,255,0.75)" pointer-events="none"/>
+<rect x="208" y="130" width="134" height="5" fill="rgba(255,255,255,0.85)" pointer-events="none"/>
+<rect x="270" y="130" width="5" height="182" fill="rgba(255,255,255,0.88)" pointer-events="none"/>
+<rect x="208" y="220" width="134" height="5" fill="rgba(255,255,255,0.8)" pointer-events="none"/>
+<line x1="350" y1="0" x2="350" y2="72" stroke="rgba(155,132,88,0.6)" stroke-width="2" pointer-events="none"/>
+<circle cx="350" cy="90" r="22" fill="none" stroke="rgba(195,170,120,0.65)" stroke-width="2" pointer-events="none"/>
+<!-- Wardrobe -->
+<polygon points="14,60 132,125 132,290 14,228" fill="url(#g-wrd)" filter="url(#f-lg)" pointer-events="none"/>
+<polygon points="18,64 72,93 72,284 18,256" fill="url(#g-wrd-door)" pointer-events="none"/>
+<polygon points="74,94 128,122 128,288 74,285" fill="url(#g-wrd-door)" pointer-events="none"/>
+<rect x="50" y="172" width="6" height="18" rx="3" fill="rgba(210,182,130,0.85)" pointer-events="none"/>
+<rect x="83" y="179" width="6" height="18" rx="3" fill="rgba(210,182,130,0.85)" pointer-events="none"/>
+<!-- Bed -->
+<ellipse cx="350" cy="422" rx="198" ry="16" fill="rgba(0,0,0,0.13)" pointer-events="none"/>
+<rect x="128" y="358" width="444" height="72" rx="4" fill="url(#g-wood-walnut)" filter="url(#f-lg)" pointer-events="none"/>
+<rect x="128" y="230" width="444" height="136" rx="8" fill="url(#g-hb)" filter="url(#f-md)" pointer-events="none"/>
+<rect x="136" y="238" width="136" height="120" rx="5" fill="url(#g-hb-panel)" pointer-events="none"/>
+<rect x="280" y="238" width="160" height="120" rx="5" fill="url(#g-hb-panel)" pointer-events="none"/>
+<rect x="448" y="238" width="116" height="120" rx="5" fill="url(#g-hb-panel)" pointer-events="none"/>
+<circle cx="196" cy="264" r="4" fill="rgba(255,255,255,0.22)" pointer-events="none"/>
+<circle cx="196" cy="298" r="4" fill="rgba(255,255,255,0.22)" pointer-events="none"/>
+<circle cx="350" cy="264" r="4" fill="rgba(255,255,255,0.2)" pointer-events="none"/>
+<circle cx="350" cy="298" r="4" fill="rgba(255,255,255,0.2)" pointer-events="none"/>
+<circle cx="502" cy="264" r="4" fill="rgba(255,255,255,0.22)" pointer-events="none"/>
+<circle cx="502" cy="298" r="4" fill="rgba(255,255,255,0.22)" pointer-events="none"/>
+<rect x="132" y="326" width="436" height="42" rx="4" fill="url(#g-mattress)" pointer-events="none"/>
+<rect x="136" y="330" width="428" height="36" rx="6" fill="url(#g-duvet)" filter="url(#f-xs)" pointer-events="none"/>
+<rect x="136" y="330" width="428" height="16" rx="5" fill="url(#g-duvet-fold)" pointer-events="none"/>
+<rect x="140" y="328" width="168" height="30" rx="8" fill="url(#g-pillow)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="142" y="329" width="164" height="8" rx="5" fill="rgba(255,255,255,0.38)" pointer-events="none"/>
+<rect x="392" y="328" width="168" height="30" rx="8" fill="url(#g-pillow)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="394" y="329" width="164" height="8" rx="5" fill="rgba(255,255,255,0.38)" pointer-events="none"/>
+<rect x="316" y="330" width="68" height="28" rx="8" fill="url(#g-pillow-deco)" filter="url(#f-xs)" pointer-events="none"/>
+<!-- Bedside tables -->
+<rect x="38" y="298" width="90" height="76" rx="5" fill="url(#g-nstand)" filter="url(#f-md)" pointer-events="none"/>
+<rect x="34" y="293" width="98" height="9" rx="4" fill="url(#g-nstand-top)" pointer-events="none"/>
+<polygon points="58,218 108,218 100,260 66,260" fill="url(#g-lampshade)" filter="url(#f-xs)" pointer-events="none"/>
+<ellipse cx="83" cy="218" rx="25" ry="5.5" fill="rgba(210,185,135,0.7)" pointer-events="none"/>
+<rect x="572" y="298" width="90" height="76" rx="5" fill="url(#g-nstand)" filter="url(#f-md)" pointer-events="none"/>
+<rect x="568" y="293" width="98" height="9" rx="4" fill="url(#g-nstand-top)" pointer-events="none"/>
+<polygon points="592,218 642,218 634,260 600,260" fill="url(#g-lampshade)" filter="url(#f-xs)" pointer-events="none"/>
+<ellipse cx="617" cy="218" rx="25" ry="5.5" fill="rgba(210,185,135,0.7)" pointer-events="none"/>
+<!-- Mirror -->
+<polygon points="524,138 666,130 666,244 524,252" fill="none" stroke="rgba(120,90,55,0.8)" stroke-width="5" pointer-events="none"/>
+<polygon points="528,140 662,132 662,240 528,248" fill="url(#g-mirror)" filter="url(#f-sm)" pointer-events="none"/>
+<!-- Rug -->
+<ellipse cx="350" cy="408" rx="195" ry="24" fill="rgba(178,155,128,0.3)" pointer-events="none"/>
+</g>
+
+<!-- KITCHEN -->
+<g id="rm-kitchen" style="display:none">
+<rect x="240" y="74" width="220" height="10" rx="4" fill="rgba(220,215,200,0.75)" pointer-events="none"/>
+<ellipse cx="350" cy="84" rx="130" ry="28" fill="rgba(255,250,215,0.16)" pointer-events="none"/>
+<!-- Window -->
+<polygon points="542,132 644,130 644,222 542,224" fill="url(#g-glass)" pointer-events="none"/>
+<polygon points="540,130 546,130 546,224 540,224" fill="rgba(255,255,255,0.8)" pointer-events="none"/>
+<polygon points="540,130 644,128 644,134 540,136" fill="rgba(255,255,255,0.8)" pointer-events="none"/>
+<line x1="593" y1="130" x2="593" y2="224" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" pointer-events="none"/>
+<line x1="540" y1="176" x2="646" y2="175" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" pointer-events="none"/>
+<!-- Upper cabinets -->
+<rect x="196" y="138" width="82" height="52" rx="3" class="s-cabinet" fill="url(#g-cabinet)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="198" y="140" width="78" height="48" rx="2" fill="rgba(255,255,255,0.55)" pointer-events="none"/>
+<line x1="237" y1="140" x2="237" y2="188" stroke="rgba(0,0,0,0.05)" stroke-width="1.2" pointer-events="none"/>
+<rect x="212" y="162" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<rect x="248" y="162" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<rect x="286" y="138" width="128" height="52" rx="3" class="s-cabinet" fill="url(#g-cabinet)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="288" y="140" width="124" height="48" rx="2" fill="rgba(255,255,255,0.55)" pointer-events="none"/>
+<line x1="350" y1="140" x2="350" y2="188" stroke="rgba(0,0,0,0.05)" stroke-width="1.2" pointer-events="none"/>
+<rect x="306" y="162" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<rect x="375" y="162" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<rect x="422" y="138" width="82" height="52" rx="3" class="s-cabinet" fill="url(#g-cabinet)" filter="url(#f-sm)" pointer-events="none"/>
+<rect x="424" y="140" width="78" height="48" rx="2" fill="rgba(255,255,255,0.55)" pointer-events="none"/>
+<line x1="463" y1="140" x2="463" y2="188" stroke="rgba(0,0,0,0.05)" stroke-width="1.2" pointer-events="none"/>
+<rect x="438" y="162" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<!-- Countertop -->
+<rect x="194" y="248" width="316" height="15" rx="3" fill="url(#g-counter)" filter="url(#f-sm)" pointer-events="none"/>
+<!-- Base cabinets -->
+<rect x="196" y="261" width="126" height="58" rx="2" class="s-cabinet" fill="url(#g-cabinet)" pointer-events="none"/>
+<line x1="259" y1="261" x2="259" y2="319" stroke="rgba(0,0,0,0.05)" stroke-width="1" pointer-events="none"/>
+<rect x="210" y="288" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<rect x="272" y="288" width="18" height="5" rx="2.5" fill="rgba(175,170,162,0.75)" pointer-events="none"/>
+<!-- Range -->
+<rect x="324" y="243" width="152" height="78" rx="3" fill="url(#g-steel)" filter="url(#f-md)" pointer-events="none"/>
+<rect x="330" y="257" width="140" height="58" rx="2" fill="rgba(58,58,65,0.75)" pointer-events="none"/>
+<rect x="338" y="258" width="124" height="7" rx="3.5" fill="rgba(200,200,212,0.85)" pointer-events="none"/>
+<rect x="338" y="270" width="124" height="40" rx="2" fill="rgba(28,52,82,0.65)" pointer-events="none"/>
+<rect x="326" y="238" width="148" height="12" rx="2" fill="rgba(42,42,48,0.8)" pointer-events="none"/>
+<ellipse cx="362" cy="244" rx="14" ry="5" fill="rgba(55,55,62,0.9)" pointer-events="none"/>
+<ellipse cx="362" cy="244" rx="10" ry="3.5" fill="rgba(70,70,78,0.7)" pointer-events="none"/>
+<ellipse cx="438" cy="244" rx="14" ry="5" fill="rgba(55,55,62,0.9)" pointer-events="none"/>
+<!-- Extractor hood -->
+<polygon points="314,192 490,192 478,238 326,238" fill="url(#g-steel)" filter="url(#f-md)" pointer-events="none"/>
+<line x1="334" y1="208" x2="470" y2="208" stroke="rgba(0,0,0,0.12)" stroke-width="1.5" pointer-events="none"/>
+<line x1="336" y1="216" x2="468" y2="216" stroke="rgba(0,0,0,0.12)" stroke-width="1.5" pointer-events="none"/>
+<!-- Sink -->
+<rect x="324" y="261" width="186" height="58" rx="2" class="s-cabinet" fill="url(#g-cabinet)" pointer-events="none"/>
+<rect x="414" y="250" width="92" height="22" rx="3" fill="rgba(128,138,145,0.45)" filter="url(#f-xs)" pointer-events="none"/>
+<rect x="416" y="252" width="42" height="17" rx="2.5" fill="rgba(112,125,132,0.6)" pointer-events="none"/>
+<rect x="462" y="252" width="42" height="17" rx="2.5" fill="rgba(112,125,132,0.6)" pointer-events="none"/>
+<!-- Dining table -->
+<ellipse cx="575" cy="342" rx="80" ry="30" fill="url(#g-counter)" filter="url(#f-md)" pointer-events="none"/>
+<rect x="568" y="350" width="14" height="54" rx="5" fill="url(#g-wood-walnut)" pointer-events="none"/>
+<ellipse cx="575" cy="400" rx="30" ry="9" fill="url(#g-wood-walnut)" pointer-events="none"/>
+<!-- Chairs -->
+<rect x="548" y="310" width="54" height="16" rx="6" fill="rgba(228,222,214,0.9)" filter="url(#f-xs)" pointer-events="none"/>
+<rect x="550" y="296" width="50" height="18" rx="7" fill="rgba(218,212,204,0.88)" pointer-events="none"/>
+<rect x="548" y="368" width="54" height="16" rx="6" fill="rgba(228,222,214,0.9)" filter="url(#f-xs)" pointer-events="none"/>
+<!-- Plant -->
+<rect x="18" y="385" width="26" height="38" rx="6" fill="rgba(150,112,72,0.6)" pointer-events="none"/>
+<ellipse cx="31" cy="385" rx="15" ry="5.5" fill="rgba(165,128,82,0.65)" pointer-events="none"/>
+<line x1="31" y1="382" x2="20" y2="338" stroke="rgba(52,92,42,0.7)" stroke-width="2.5" pointer-events="none"/>
+<line x1="31" y1="370" x2="44" y2="328" stroke="rgba(52,92,42,0.7)" stroke-width="2.5" pointer-events="none"/>
+<ellipse cx="18" cy="336" rx="17" ry="10" fill="rgba(64,112,52,0.65)" transform="rotate(-25,18,336)" pointer-events="none"/>
+<ellipse cx="46" cy="325" rx="15" ry="9" fill="rgba(72,122,58,0.6)" transform="rotate(22,46,325)" pointer-events="none"/>
+</g>
+
+<!-- Selection ring -->
+<polygon id="selRing" points="190,130 510,130 510,315 190,315" fill="none" stroke="#8b6f47" stroke-width="2.2" stroke-dasharray="10,6" class="anim" opacity="0" pointer-events="none"/>
+
+<!-- Surface labels -->
+<text x="350" y="226" text-anchor="middle" font-size="9" fill="rgba(0,0,0,0.11)" font-family="Outfit,sans-serif" letter-spacing="2.5" pointer-events="none">BACK WALL</text>
+<text x="70" y="195" text-anchor="middle" font-size="8.5" fill="rgba(0,0,0,0.09)" font-family="Outfit,sans-serif" letter-spacing="2" transform="rotate(-30,70,195)" pointer-events="none">LEFT</text>
+<text x="635" y="195" text-anchor="middle" font-size="8.5" fill="rgba(0,0,0,0.09)" font-family="Outfit,sans-serif" letter-spacing="2" transform="rotate(30,635,195)" pointer-events="none">RIGHT</text>
+<text x="350" y="58" text-anchor="middle" font-size="8" fill="rgba(0,0,0,0.08)" font-family="Outfit,sans-serif" letter-spacing="2" pointer-events="none">CEILING</text>
+<text x="350" y="385" text-anchor="middle" font-size="9" fill="rgba(0,0,0,0.09)" font-family="Outfit,sans-serif" letter-spacing="2.5" pointer-events="none">FLOOR</text>
+</svg>
+<div class="badge-lbl" id="badge">Koi bhi deewar chuniye</div>
+</div>
+
+<!-- COLOUR BAR -->
+<div class="cbar">
+  <div class="swatch" id="bigSw" style="background:#ece5dc"></div>
+  <div class="cmeta">
+    <h3 id="cName">Choose a colour</h3>
+    <p id="cCode">Deewar chuniye · phir rang lagaiye</p>
+  </div>
+  <button class="btn-all" id="btnAll" onclick="applyAll()">All Walls</button>
+</div>
+
+<!-- SURFACE BUTTONS -->
+<div class="srow">
+  <button class="sbtn on" id="sb-back" onclick="sel('back')"><div class="dot" id="d-back" style="background:#ece5dc"></div>Back</button>
+  <button class="sbtn" id="sb-left" onclick="sel('left')"><div class="dot" id="d-left" style="background:#e3dbd1"></div>Left</button>
+  <button class="sbtn" id="sb-right" onclick="sel('right')"><div class="dot" id="d-right" style="background:#e8e1d7"></div>Right</button>
+  <button class="sbtn" id="sb-ceiling" onclick="sel('ceiling')"><div class="dot" id="d-ceiling" style="background:#f7f4ef"></div>Ceiling</button>
+  <button class="sbtn" id="sb-cabinet" onclick="sel('cabinet')" style="display:none"><div class="dot" id="d-cabinet" style="background:#f2eeea"></div>Cabinets</button>
+  <button class="sbtn" id="sb-floor" onclick="sel('floor')"><div class="dot" id="d-floor" style="background:#b8a882"></div>Floor</button>
+</div>
+
+<!-- PALETTE -->
+<div class="pal">
+  <div class="ph">Rang Chuniye</div>
+  <div class="search">
+    <span style="color:var(--muted);font-size:1rem">⌕</span>
+    <input type="text" id="si" placeholder="Search — W-107, Taj White, Sage…" oninput="draw()" autocomplete="off" spellcheck="false"/>
+  </div>
+  <div class="cats">
+    <button class="pill on" onclick="cat('all',this)">All</button>
+    <button class="pill" onclick="cat('whites',this)">Whites</button>
+    <button class="pill" onclick="cat('yellows',this)">Yellows</button>
+    <button class="pill" onclick="cat('greens',this)">Greens</button>
+    <button class="pill" onclick="cat('blues',this)">Blues</button>
+    <button class="pill" onclick="cat('purples',this)">Purples</button>
+    <button class="pill" onclick="cat('pinks',this)">Pinks</button>
+    <button class="pill" onclick="cat('neutrals',this)">Neutrals</button>
+    <button class="pill" onclick="cat('darks',this)">Darks</button>
+  </div>
+  <div id="gw"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ASIAN PAINTS COLOUR DATA (accurate hex values based on official catalogue) ──
+const C=[
+  // WHITES — Asian Paints Tractor Emulsion / Royale whites
+  {c:'W-101',n:'Crystal White',h:'#F8F7F5',g:'whites'},
+  {c:'W-102',n:'Snowflake',h:'#F6F5F0',g:'whites'},
+  {c:'W-103',n:'Silky White',h:'#F5F1EC',g:'whites'},
+  {c:'W-104',n:'White Sand',h:'#EEEADE',g:'whites'},
+  {c:'W-105',n:'Daybloom',h:'#F3EEE4',g:'whites'},
+  {c:'W-106',n:'Day Spring',h:'#F2EEE7',g:'whites'},
+  {c:'W-107',n:'Taj White',h:'#F4EDE8',g:'whites'},
+  {c:'W-108',n:'Himalayan White',h:'#F0EBE3',g:'whites'},
+  {c:'W-109',n:'Calm White',h:'#F2ECE5',g:'whites'},
+  {c:'W-110',n:'Smoky White',h:'#EAE5DA',g:'whites'},
+  {c:'W-111',n:'Jasmine White',h:'#F4EFE7',g:'whites'},
+  {c:'W-112',n:'Muslin',h:'#EEE7DC',g:'whites'},
+  {c:'W-113',n:'Pearl White',h:'#F6F2ED',g:'whites'},
+  {c:'W-114',n:'Raw White',h:'#F2EDE2',g:'whites'},
+  {c:'W-115',n:'Milkcake',h:'#F8F3EA',g:'whites'},
+  {c:'W-116',n:'Cotton Lace',h:'#F5EFE5',g:'whites'},
+  {c:'W-117',n:'Star White',h:'#F7F3EC',g:'whites'},
+  {c:'W-118',n:'Soft Cuddle',h:'#F4EFE9',g:'whites'},
+  {c:'W-119',n:'Artistic White',h:'#F3EDE6',g:'whites'},
+  {c:'W-120',n:'Fluffy White',h:'#F9F6EF',g:'whites'},
+  {c:'W-121',n:'White Rose',h:'#F6EFEA',g:'whites'},
+  {c:'W-122',n:'Mysterious White',h:'#F0EAE2',g:'whites'},
+  {c:'W-123',n:'Comfort',h:'#F2EEE6',g:'whites'},
+  {c:'W-124',n:'Feather White',h:'#F5F1EC',g:'whites'},
+  {c:'W-125',n:'White Light',h:'#FAF7F1',g:'whites'},
+  {c:'W-126',n:'Sparkle White',h:'#F7F4EE',g:'whites'},
+  {c:'W-127',n:'Water Lily',h:'#EFEBe4',g:'whites'},
+  {c:'W-128',n:'Tussar Silk',h:'#EEE7D9',g:'whites'},
+  {c:'W-129',n:'Khadi White',h:'#EEE6D8',g:'whites'},
+  {c:'W-130',n:'Sugar White',h:'#F3EEE4',g:'whites'},
+
+  // YELLOWS — Asian Paints Apcolite / Royale yellows & oranges
+  {c:'AP-Y01',n:'Sunny Lemon',h:'#F7E84C',g:'yellows'},
+  {c:'AP-Y02',n:'Vanilla Custard',h:'#F6E2A2',g:'yellows'},
+  {c:'AP-Y03',n:'Banana Cream',h:'#F5E8B5',g:'yellows'},
+  {c:'AP-Y04',n:'Sunburst',h:'#F9DF6A',g:'yellows'},
+  {c:'AP-Y05',n:'Primrose',h:'#F8E272',g:'yellows'},
+  {c:'AP-Y06',n:'Lantern Glow',h:'#F6DD65',g:'yellows'},
+  {c:'AP-Y07',n:'Honey Cream',h:'#F5E3A5',g:'yellows'},
+  {c:'AP-Y08',n:'Meringue',h:'#F4D96A',g:'yellows'},
+  {c:'AP-Y09',n:'Texas Yellow',h:'#F2D760',g:'yellows'},
+  {c:'AP-Y10',n:'Bumble Bee',h:'#F0D558',g:'yellows'},
+  {c:'AP-Y11',n:'Wax Yellow',h:'#F1D860',g:'yellows'},
+  {c:'AP-Y12',n:'Lemon Balm',h:'#F6E645',g:'yellows'},
+  {c:'AP-Y13',n:'Daisy Chain',h:'#EED458',g:'yellows'},
+  {c:'AP-Y14',n:'Tulip Yellow',h:'#EDD255',g:'yellows'},
+  {c:'AP-Y15',n:'Pineapple',h:'#EBD050',g:'yellows'},
+  {c:'AP-Y16',n:'Paper Moon',h:'#E8CC4E',g:'yellows'},
+  {c:'AP-Y17',n:'Daffodil',h:'#E7CA4C',g:'yellows'},
+  {c:'AP-Y18',n:'Egg Custard',h:'#F4E09E',g:'yellows'},
+  {c:'AP-Y19',n:'Forsythia',h:'#E5C94A',g:'yellows'},
+  {c:'AP-Y20',n:'April Sun',h:'#E3C748',g:'yellows'},
+  {c:'AP-Y21',n:'Ra Gold',h:'#E8B820',g:'yellows'},
+  {c:'AP-Y22',n:'Golden Glaze',h:'#E6B41E',g:'yellows'},
+  {c:'AP-Y23',n:'Mecca Gold',h:'#E4B01C',g:'yellows'},
+  {c:'AP-Y24',n:'Golden Wheat',h:'#DFC055',g:'yellows'},
+  {c:'AP-Y25',n:'Honeysuckle',h:'#D4921A',g:'yellows'},
+  {c:'AP-Y26',n:'Tawny Lion',h:'#D8BC52',g:'yellows'},
+  {c:'AP-Y27',n:'Gilded Lily',h:'#D4B84E',g:'yellows'},
+  {c:'AP-Y28',n:'Kabuki',h:'#D0B24A',g:'yellows'},
+  {c:'AP-Y29',n:'Calypso Time',h:'#CEAF48',g:'yellows'},
+  {c:'AP-Y30',n:'Chiffon',h:'#CCAD46',g:'yellows'},
+  {c:'AP-Y31',n:'Orange Grove',h:'#F5903A',g:'yellows'},
+  {c:'AP-Y32',n:'Mandarin',h:'#F28A34',g:'yellows'},
+  {c:'AP-Y33',n:'Nasturtium',h:'#C8AA4C',g:'yellows'},
+  {c:'AP-Y34',n:'Peach Blossom',h:'#F5C090',g:'yellows'},
+  {c:'AP-Y35',n:'Orange Ice',h:'#F28C3C',g:'yellows'},
+  {c:'AP-Y36',n:'Indian Summer',h:'#B49848',g:'yellows'},
+  {c:'AP-Y37',n:'Autumn Flame',h:'#B29644',g:'yellows'},
+
+  // PINKS & REDS — Asian Paints Royale pinks
+  {c:'AP-P01',n:'Coral Bay',h:'#E87058',g:'pinks'},
+  {c:'AP-P02',n:'Siesta',h:'#E2A2A2',g:'pinks'},
+  {c:'AP-P03',n:'Pale Rust',h:'#C46030',g:'pinks'},
+  {c:'AP-P04',n:'Rust',h:'#BC5C2E',g:'pinks'},
+  {c:'AP-P05',n:'Tender Touch',h:'#E0A0A0',g:'pinks'},
+  {c:'AP-P06',n:'Cameo Peach',h:'#F4C0A0',g:'pinks'},
+  {c:'AP-P07',n:'Peach Blush',h:'#E89898',g:'pinks'},
+  {c:'AP-P08',n:'Baby Pink',h:'#E09898',g:'pinks'},
+  {c:'AP-P09',n:'Tearose Pink',h:'#E88A8A',g:'pinks'},
+  {c:'AP-P10',n:'Festival Night',h:'#DC9A9B',g:'pinks'},
+  {c:'AP-P11',n:'Coral Serenade',h:'#E46858',g:'pinks'},
+  {c:'AP-P12',n:'Pale Dogwood',h:'#F0D8D0',g:'pinks'},
+  {c:'AP-P13',n:'Blushing Peach',h:'#E89898',g:'pinks'},
+  {c:'AP-P14',n:'Tapestry',h:'#D89496',g:'pinks'},
+  {c:'AP-P15',n:'Pink Pearl',h:'#D89096',g:'pinks'},
+  {c:'AP-P16',n:'Damask Rose',h:'#E48888',g:'pinks'},
+  {c:'AP-P17',n:'Wild Rose',h:'#E08080',g:'pinks'},
+  {c:'AP-P18',n:'Peony',h:'#D28890',g:'pinks'},
+  {c:'AP-P19',n:'Grenadine',h:'#D08A8E',g:'pinks'},
+  {c:'AP-P20',n:'Crushed Strawberry',h:'#CE8490',g:'pinks'},
+  {c:'AP-P21',n:'Cherry Bon Bon',h:'#CC8090',g:'pinks'},
+  {c:'AP-P22',n:'Mauve',h:'#C87C8C',g:'pinks'},
+  {c:'AP-P23',n:'Bubblegum',h:'#CA8090',g:'pinks'},
+  {c:'AP-P24',n:'Amethyst Stone',h:'#C67C8C',g:'pinks'},
+  {c:'AP-P25',n:'Berry Jam',h:'#C47888',g:'pinks'},
+  {c:'AP-P26',n:'Sweet William',h:'#C47680',g:'pinks'},
+  {c:'AP-P27',n:'Wood Violet',h:'#C27480',g:'pinks'},
+  {c:'AP-P28',n:'African Violet',h:'#C07080',g:'pinks'},
+  {c:'AP-P29',n:'Burgundy',h:'#883840',g:'pinks'},
+  {c:'AP-P30',n:'Deep Claret',h:'#882440',g:'pinks'},
+  {c:'AP-P31',n:'Brick',h:'#C84040',g:'pinks'},
+  {c:'AP-P32',n:'Burnt Brick',h:'#C03838',g:'pinks'},
+  {c:'AP-P33',n:'Red Earth',h:'#BC3838',g:'pinks'},
+  {c:'AP-P34',n:'Berry Crush',h:'#D18090',g:'pinks'},
+  // New generation pinks (4100 series)
+  {c:'4101D-N',n:'Positively Pink',h:'#F5B8C4',g:'pinks'},
+  {c:'4102P-N',n:'Baby Ballerina',h:'#F7C0CC',g:'pinks'},
+  {c:'4103P-N',n:'Strawberry Cream',h:'#F5BCC8',g:'pinks'},
+  {c:'4115T-N',n:'Sunset Boulevard',h:'#F0B8C0',g:'pinks'},
+  {c:'4120P-N',n:'Pink Sonata',h:'#EDB8C2',g:'pinks'},
+  {c:'4130D-N',n:'Pink Secrets',h:'#EAB0BC',g:'pinks'},
+  {c:'4145D-N',n:'Vintage Valley',h:'#E5A8B5',g:'pinks'},
+  {c:'4157T-N',n:'Rajasthan Pink',h:'#E0A8B2',g:'pinks'},
+  {c:'4170P-N',n:'Ballet Shoes',h:'#DCA4B0',g:'pinks'},
+  {c:'4174D-N',n:'Intoxicated',h:'#CC98B8',g:'pinks'},
+  {c:'4190D-N',n:'Royal Robe',h:'#C494B5',g:'pinks'},
+  {c:'4211D-N',n:'Grand Ballroom',h:'#C090B0',g:'pinks'},
+  {c:'4229T-N',n:'Dark Skies',h:'#B04E5C',g:'pinks'},
+  {c:'4241D-N',n:'Lolite Stone',h:'#BC8AAA',g:'pinks'},
+  {c:'4265T-N',n:'Blue Winks',h:'#B088A4',g:'pinks'},
+  {c:'4280T-N',n:'Blue Jazz',h:'#A880A0',g:'pinks'},
+
+  // PURPLES — Asian Paints Royale purple range
+  {c:'2300D',n:'Purple Shade',h:'#B48CC8',g:'purples'},
+  {c:'2302P',n:'Egret',h:'#B28BC7',g:'purples'},
+  {c:'2303P',n:'Lady Diana',h:'#B08AC6',g:'purples'},
+  {c:'2304P',n:'Zesty Lilac',h:'#C8B0D8',g:'purples'},
+  {c:'2305T',n:'Olympia',h:'#AE88C5',g:'purples'},
+  {c:'2307D',n:'Mystic Purple',h:'#AC86C4',g:'purples'},
+  {c:'2311P',n:'Lavender Haze',h:'#C4AED5',g:'purples'},
+  {c:'2313D',n:'Egyptian Violet',h:'#9878C0',g:'purples'},
+  {c:'2317P',n:'Canada Violet',h:'#9A7CBE',g:'purples'},
+  {c:'2320D',n:'Grape Juice',h:'#8860A0',g:'purples'},
+  {c:'2321D',n:'Plum Pie',h:'#785080',g:'purples'},
+  {c:'2323P',n:'Violet Eyes',h:'#9E7EC0',g:'purples'},
+  {c:'2324P',n:'Sweet Violet',h:'#9C7CBE',g:'purples'},
+  {c:'2326T',n:'Meadow Phlox',h:'#A880C2',g:'purples'},
+  {c:'2327D',n:'Sweet Bianca',h:'#A67EC0',g:'purples'},
+  {c:'2328D',n:'Jam',h:'#A47CBE',g:'purples'},
+  {c:'2334D',n:'Verbena Violet',h:'#A078BC',g:'purples'},
+  {c:'2336C',n:'Purple Sage',h:'#A076BA',g:'purples'},
+  {c:'2340P',n:'Sweet Lavender',h:'#C8B0D8',g:'purples'},
+  {c:'2342D',n:'Deep Periwinkle',h:'#604878',g:'purples'},
+  {c:'2346P',n:'Pale Cornflower',h:'#D4C4E5',g:'purples'},
+  {c:'2348D',n:'Virginia Bluebell',h:'#9C78BC',g:'purples'},
+  {c:'2354T',n:'Delta',h:'#9876BA',g:'purples'},
+  {c:'2361T',n:'Peaceful Night',h:'#9472B5',g:'purples'},
+  {c:'2362T',n:'Violet Hue',h:'#9270B3',g:'purples'},
+  {c:'2365P',n:'Prelude',h:'#9070B0',g:'purples'},
+  {c:'2366P',n:'Powder Blue',h:'#8E6EAE',g:'purples'},
+  {c:'2372P',n:'April Sky',h:'#8A6AAA',g:'purples'},
+  {c:'2374T',n:'Always Blue',h:'#8868A8',g:'purples'},
+  {c:'2375T',n:'Cathedral Blue',h:'#8666A6',g:'purples'},
+  {c:'2377D',n:'Ultra Blue',h:'#8464A4',g:'purples'},
+  {c:'2383D',n:'Raven Sky',h:'#7E5EA0',g:'purples'},
+  {c:'2391D',n:'Cosmic',h:'#7A589C',g:'purples'},
+  {c:'2392C',n:'Olympian Blue',h:'#785698',g:'purples'},
+  {c:'2396T',n:'Aegean Blue',h:'#765494',g:'purples'},
+  {c:'2397D',n:'Abstract',h:'#745292',g:'purples'},
+  {c:'2398D',n:'Cleopatra',h:'#725090',g:'purples'},
+  {c:'2399P',n:'Stardust',h:'#704E8E',g:'purples'},
+
+  // BLUES — Asian Paints Royale blues
+  {c:'2400P',n:'Ashley',h:'#68A0D8',g:'blues'},
+  {c:'2401P',n:'Arran',h:'#669ED6',g:'blues'},
+  {c:'2402P',n:'Cove Blue',h:'#649CD4',g:'blues'},
+  {c:'2403T',n:'Blue Thunder',h:'#629AD2',g:'blues'},
+  {c:'2404D',n:'Flattery',h:'#6098D0',g:'blues'},
+  {c:'2411D',n:'Blue Sapphire',h:'#385AA8',g:'blues'},
+  {c:'2414P',n:'Ice Cascade',h:'#CCE0F0',g:'blues'},
+  {c:'2417T',n:'Rainy Day',h:'#5C8ACE',g:'blues'},
+  {c:'2418T',n:'Havasu Lake',h:'#5A88CC',g:'blues'},
+  {c:'2421P',n:'Calm Dawn',h:'#5886CA',g:'blues'},
+  {c:'2425D',n:'Slumber',h:'#5684C8',g:'blues'},
+  {c:'2427C',n:'Midnight Blue',h:'#2A3A5A',g:'blues'},
+  {c:'2429P',n:'Swan Sea',h:'#4888B0',g:'blues'},
+  {c:'2432D',n:'Sailor\'s Dream',h:'#5280C6',g:'blues'},
+  {c:'2437P',n:'Delphi',h:'#5080C4',g:'blues'},
+  {c:'2439D',n:'Current',h:'#4E7EC2',g:'blues'},
+  {c:'2441C',n:'Blue Crackle',h:'#4C7CC0',g:'blues'},
+  {c:'2443P',n:'Ice Castle',h:'#CCE0F0',g:'blues'},
+  {c:'2445T',n:'Seaside',h:'#4888B0',g:'blues'},
+  {c:'2447D',n:'Gem',h:'#4878BE',g:'blues'},
+  {c:'2449P',n:'Morning Haze',h:'#4676BC',g:'blues'},
+  {c:'2450P',n:'Aqualake',h:'#5CB4C0',g:'blues'},
+  {c:'2454D',n:'Cool Lagoon',h:'#4870C0',g:'blues'},
+  {c:'2455C',n:'Nordic Sea',h:'#4888B0',g:'blues'},
+  {c:'2460D',n:'Blue Spark',h:'#4870BC',g:'blues'},
+  {c:'2462C',n:'Danube Sky',h:'#A8C8E8',g:'blues'},
+  {c:'2464P',n:'Iced Chiffon',h:'#CCE0F0',g:'blues'},
+  {c:'2468C',n:'Aqua Electra',h:'#5AB4C0',g:'blues'},
+  {c:'2471P',n:'Aqua Crystal',h:'#58B0BC',g:'blues'},
+  {c:'2474T',n:'Ocean Cruise',h:'#4888B0',g:'blues'},
+  {c:'2476C',n:'Le Mer',h:'#4470C0',g:'blues'},
+  {c:'2481D',n:'Jamaican Sea',h:'#4268B8',g:'blues'},
+  {c:'2487T',n:'Pitch Pine',h:'#4068B5',g:'blues'},
+  {c:'2490C',n:'Conifer',h:'#3E66B2',g:'blues'},
+  {c:'2494T',n:'Meandering Stream',h:'#4068B0',g:'blues'},
+  {c:'2497C',n:'Odyssey',h:'#3E64AE',g:'blues'},
+  // New turquoise blues
+  {c:'4302D-N',n:'Turquoise Trend',h:'#52B8C0',g:'blues'},
+  {c:'4310C-N',n:'Deep Turquoise',h:'#2A3A5A',g:'blues'},
+  {c:'4316T-N',n:'Cool Seasons',h:'#4888B0',g:'blues'},
+  {c:'4328P-N',n:'Teal Tone',h:'#54B4B8',g:'blues'},
+  {c:'4331D-N',n:'Ocean Deep',h:'#2A3A5A',g:'blues'},
+  {c:'4332C-N',n:'Indian Ocean',h:'#4888B0',g:'blues'},
+  {c:'4340P-N',n:'Cool Icicle',h:'#52B8A8',g:'blues'},
+  {c:'4350T-N',n:'Green Isle',h:'#4EB8A5',g:'blues'},
+  {c:'4360D-N',n:'Full Canopy',h:'#4AB5A2',g:'blues'},
+  {c:'4374T-N',n:'Virgin Forest',h:'#46B09E',g:'blues'},
+  {c:'4380T-N',n:'Leafy Shades',h:'#42AC9A',g:'blues'},
+  {c:'4388T-N',n:'Refreshing Green',h:'#3EA898',g:'blues'},
+  {c:'4397C-N',n:'Lavish Lime',h:'#3AA494',g:'blues'},
+
+  // GREENS — Asian Paints Royale greens
+  {c:'2500P',n:'Cassidy',h:'#64AA64',g:'greens'},
+  {c:'2501T',n:'Aphrodite',h:'#62A862',g:'greens'},
+  {c:'2502D',n:'Green Dream',h:'#60A660',g:'greens'},
+  {c:'2511C',n:'Turquoise Tone',h:'#50A898',g:'greens'},
+  {c:'2513P',n:'Spearmint',h:'#A8D8B8',g:'greens'},
+  {c:'2516D',n:'Corsage',h:'#9AB898',g:'greens'},
+  {c:'2519P',n:'Mint Frappe',h:'#A8D8C0',g:'greens'},
+  {c:'2523D',n:'Mountain Grass',h:'#72B052',g:'greens'},
+  {c:'2524D',n:'Emerald Forest',h:'#3A6040',g:'greens'},
+  {c:'2525C',n:'Hunter Green',h:'#386040',g:'greens'},
+  {c:'2529T',n:'Jericho Jade',h:'#4A9870',g:'greens'},
+  {c:'2530D',n:'Forest Shade',h:'#3A6040',g:'greens'},
+  {c:'2536T',n:'Meadow Green',h:'#5CA460',g:'greens'},
+  {c:'2541P',n:'Mint Sherbet',h:'#A8D8B8',g:'greens'},
+  {c:'2545D',n:'Green Envy',h:'#5AA05E',g:'greens'},
+  {c:'2551D',n:'Cactus Pete',h:'#58A05C',g:'greens'},
+  {c:'2552D',n:'Sherwood Forest',h:'#386040',g:'greens'},
+  {c:'2557T',n:'Pistachio Nut',h:'#58A05C',g:'greens'},
+  {c:'2561P',n:'Limelight',h:'#C8D858',g:'greens'},
+  {c:'2562P',n:'Summer Green',h:'#56A05C',g:'greens'},
+  {c:'2566D',n:'Perky Lime',h:'#C6D655',g:'greens'},
+  {c:'2572D',n:'Limerick',h:'#C4D452',g:'greens'},
+  {c:'2579D',n:'Cool Grass',h:'#70B050',g:'greens'},
+  {c:'2585T',n:'Celery',h:'#58A25C',g:'greens'},
+  {c:'2589P',n:'Light Celery',h:'#C0D8B8',g:'greens'},
+  {c:'2595C',n:'Spring Bud',h:'#54A058',g:'greens'},
+  {c:'2600D',n:'Beowulf',h:'#52A055',g:'greens'},
+  {c:'2604P',n:'Light Moss',h:'#789068',g:'greens'},
+  {c:'2605P',n:'Pale Ivy',h:'#C0D8B8',g:'greens'},
+  {c:'2614D',n:'Currency',h:'#4E9C52',g:'greens'},
+  {c:'2616C',n:'Pond Moss',h:'#789068',g:'greens'},
+  {c:'2621D',n:'Tennis Green',h:'#4E9852',g:'greens'},
+  {c:'2629D',n:'Lime Peel',h:'#C0D055',g:'greens'},
+  {c:'2634T',n:'Prime Lime',h:'#BED052',g:'greens'},
+  {c:'2636D',n:'Vibrant Lime',h:'#BCD050',g:'greens'},
+  {c:'2643D',n:'Green Rage',h:'#4A9850',g:'greens'},
+  {c:'2647D',n:'Turf Green',h:'#489848',g:'greens'},
+  {c:'2650D',n:'Grecian Olive',h:'#788040',g:'greens'},
+  {c:'2651D',n:'Loden',h:'#489848',g:'greens'},
+  {c:'2656D',n:'Eve',h:'#489848',g:'greens'},
+  {c:'2664D',n:'Sea Moss',h:'#789068',g:'greens'},
+  {c:'2668T',n:'Yellow Grass',h:'#72B050',g:'greens'},
+  {c:'2672C',n:'Golden Olive',h:'#788040',g:'greens'},
+  {c:'2679C',n:'Moss Bronze',h:'#786868',g:'greens'},
+  {c:'2682T',n:'August Grass',h:'#72B050',g:'greens'},
+  {c:'2686C',n:'Ivy Olive',h:'#788040',g:'greens'},
+  {c:'2699D',n:'Ecru Olive',h:'#788040',g:'greens'},
+  // New gen greens
+  {c:'4403D-N',n:'Bay Leaf',h:'#78A868',g:'greens'},
+  {c:'4406T-N',n:'Lighthearted Green',h:'#C0D8B8',g:'greens'},
+  {c:'4410P-N',n:'Moss Patch',h:'#789068',g:'greens'},
+  {c:'4413D-N',n:'Curry Leaf',h:'#74A264',g:'greens'},
+  {c:'4420D-N',n:'Organic',h:'#72A462',g:'greens'},
+  {c:'4428C-N',n:'Willow Green',h:'#6EA060',g:'greens'},
+  {c:'4434D-N',n:'Kew Gardens',h:'#6EA060',g:'greens'},
+  {c:'4441D-N',n:'Only Olive',h:'#788040',g:'greens'},
+  {c:'4449C-N',n:'Shady Grove',h:'#6C9E5E',g:'greens'},
+  {c:'4462D-N',n:'Big Boulder',h:'#689858',g:'greens'},
+  {c:'4470C-N',n:'Kiwi Gold',h:'#669658',g:'greens'},
+  {c:'4483D-N',n:'Oak Tree',h:'#649455',g:'greens'},
+
+  // NEUTRALS — Asian Paints Royale browns & beiges
+  {c:'2700C',n:'Ecru Olive',h:'#D4B48C',g:'neutrals'},
+  {c:'2701P',n:'Yellow Custard',h:'#D2B48A',g:'neutrals'},
+  {c:'2702P',n:'Divinity Cream',h:'#EDE0C8',g:'neutrals'},
+  {c:'2703P',n:'Creamette',h:'#ECE0C5',g:'neutrals'},
+  {c:'2708P',n:'Winter Moon',h:'#D2B28A',g:'neutrals'},
+  {c:'2710T',n:'Flax Straw',h:'#D0B088',g:'neutrals'},
+  {c:'2715P',n:'Daylight',h:'#D0B085',g:'neutrals'},
+  {c:'2716P',n:'Indian Sand',h:'#D5C090',g:'neutrals'},
+  {c:'2719D',n:'Gaucho',h:'#CEAF86',g:'neutrals'},
+  {c:'2721C',n:'Marsupial',h:'#CCAC85',g:'neutrals'},
+  {c:'2722P',n:'White Vermouth',h:'#F0EBE2',g:'neutrals'},
+  {c:'2724P',n:'Sea Oats',h:'#CBAC84',g:'neutrals'},
+  {c:'2726D',n:'Epaulet',h:'#CAAA82',g:'neutrals'},
+  {c:'2730P',n:'Sesame',h:'#CAA880',g:'neutrals'},
+  {c:'2731P',n:'Chamois',h:'#C8A880',g:'neutrals'},
+  {c:'2738T',n:'Sombrero Tan',h:'#C8A068',g:'neutrals'},
+  {c:'2743P',n:'Linen Cream',h:'#DFD4C0',g:'neutrals'},
+  {c:'2744P',n:'Sahara Sun',h:'#D4C090',g:'neutrals'},
+  {c:'2745P',n:'Light Camel',h:'#CAA068',g:'neutrals'},
+  {c:'2747D',n:'Condiment',h:'#C6A47C',g:'neutrals'},
+  {c:'2751P',n:'Tampico',h:'#C4A27A',g:'neutrals'},
+  {c:'2753T',n:'Caramel Kiss',h:'#C4A278',g:'neutrals'},
+  {c:'2757P',n:'Desert Sand',h:'#D2C090',g:'neutrals'},
+  {c:'2759T',n:'Suede Tan',h:'#C6A068',g:'neutrals'},
+  {c:'2762D',n:'Raisin',h:'#C29C75',g:'neutrals'},
+  {c:'2766P',n:'Espresso Cream',h:'#5A3820',g:'neutrals'},
+  {c:'2772P',n:'White Vermouth',h:'#F0EBE2',g:'neutrals'},
+  {c:'2774T',n:'Fawn Beige',h:'#DDD4C0',g:'neutrals'},
+  {c:'2776D',n:'Maple Syrup',h:'#C29E72',g:'neutrals'},
+  {c:'2779P',n:'Haystack',h:'#C09C70',g:'neutrals'},
+  {c:'2783D',n:'Chestnut',h:'#BE9A6E',g:'neutrals'},
+  {c:'2787P',n:'Pebble',h:'#BC986C',g:'neutrals'},
+  {c:'2789D',n:'Freckles',h:'#BC966E',g:'neutrals'},
+  {c:'2795T',n:'Fired Clay',h:'#B87858',g:'neutrals'},
+  {c:'2796D',n:'Mousse',h:'#B8946A',g:'neutrals'},
+  {c:'2797D',n:'Cocoa Cream',h:'#EDE0C8',g:'neutrals'},
+  {c:'2802T',n:'Bryce Canyon',h:'#B89068',g:'neutrals'},
+  {c:'2805C',n:'Hazelnut',h:'#B68E65',g:'neutrals'},
+  {c:'2809T',n:'Honey Roast',h:'#B48C62',g:'neutrals'},
+  {c:'2811D',n:'Cinnamon Spice',h:'#B28A60',g:'neutrals'},
+  {c:'2813P',n:'Cedar Rust',h:'#C06840',g:'neutrals'},
+  {c:'2817D',n:'Java',h:'#B28862',g:'neutrals'},
+  {c:'2819C',n:'Mocha Bisque',h:'#8A5830',g:'neutrals'},
+  {c:'2824D',n:'Pumpernickel',h:'#B08660',g:'neutrals'},
+  {c:'2825D',n:'Brownies',h:'#885830',g:'neutrals'},
+  {c:'2831D',n:'Sugar Creek',h:'#AC8458',g:'neutrals'},
+  {c:'2835P',n:'Chowder',h:'#AA8058',g:'neutrals'},
+  {c:'2843P',n:'Peanut',h:'#A87E55',g:'neutrals'},
+  {c:'2845D',n:'Cloister',h:'#A87C52',g:'neutrals'},
+  {c:'2847C',n:'Espresso',h:'#5A3820',g:'neutrals'},
+  {c:'2851T',n:'Butternut',h:'#A47A50',g:'neutrals'},
+  {c:'2852D',n:'Kodiak',h:'#A2784E',g:'neutrals'},
+  {c:'2857P',n:'Necco',h:'#A0764C',g:'neutrals'},
+  {c:'2860D',n:'Chocolate Mousse',h:'#885830',g:'neutrals'},
+  {c:'2865T',n:'Weathered',h:'#9C7248',g:'neutrals'},
+  {c:'2867D',n:'Tundra Earth',h:'#9C7044',g:'neutrals'},
+  {c:'2871P',n:'Smoke Signal',h:'#9A6E45',g:'neutrals'},
+  {c:'2875C',n:'Blackberry',h:'#986C42',g:'neutrals'},
+  {c:'2880D',n:'Storm',h:'#966A40',g:'neutrals'},
+  {c:'2884P',n:'White Chocolate',h:'#F0EBE2',g:'neutrals'},
+  {c:'2887D',n:'Pinecone',h:'#946842',g:'neutrals'},
+  {c:'2893T',n:'Concrete',h:'#926640',g:'neutrals'},
+  {c:'2897P',n:'Pale Mushroom',h:'#907E50',g:'neutrals'},
+
+  // DARKS — Asian Paints deep tones
+  {c:'2900T',n:'Yorkshire Brown',h:'#4A3020',g:'darks'},
+  {c:'2901T',n:'Harvest Time',h:'#969699',g:'darks'},
+  {c:'2904P',n:'Nearly White',h:'#E8E4DC',g:'darks'},
+  {c:'2907T',n:'Bufftone',h:'#929296',g:'darks'},
+  {c:'2908D',n:'Rawhide',h:'#909094',g:'darks'},
+  {c:'2910C',n:'Rembrandt',h:'#8E8E92',g:'darks'},
+  {c:'2913P',n:'Taupe Gray',h:'#808898',g:'darks'},
+  {c:'2917C',n:'Keystone',h:'#8A8A8E',g:'darks'},
+  {c:'2919P',n:'Silver Screen',h:'#888890',g:'darks'},
+  {c:'2922D',n:'Thunder Bay',h:'#868688',g:'darks'},
+  {c:'2923D',n:'Seclusion',h:'#848485',g:'darks'},
+  {c:'2926P',n:'White Smoke',h:'#E8E4DC',g:'darks'},
+  {c:'2928T',n:'Lava Stone',h:'#828282',g:'darks'},
+  {c:'2931C',n:'Dark Moss',h:'#808080',g:'darks'},
+  {c:'2935T',n:'Yucca',h:'#7E7E80',g:'darks'},
+  {c:'2937D',n:'Lizard',h:'#7C7C7E',g:'darks'},
+  {c:'2941T',n:'Cavalier',h:'#7A7A7C',g:'darks'},
+  {c:'2944D',n:'Deep Jungle',h:'#383C30',g:'darks'},
+  {c:'2945D',n:'Spruce Grove',h:'#363A2E',g:'darks'},
+  {c:'2952C',n:'Black Hills',h:'#302820',g:'darks'},
+  {c:'2956T',n:'Phantom',h:'#747474',g:'darks'},
+  {c:'2958D',n:'Night Moves',h:'#727272',g:'darks'},
+  {c:'2959C',n:'Black Pitch',h:'#302820',g:'darks'},
+  {c:'2962P',n:'Silver Night',h:'#707070',g:'darks'},
+  {c:'2964D',n:'Gray Flannel',h:'#808898',g:'darks'},
+  {c:'2965D',n:'Sinbad',h:'#6C6C70',g:'darks'},
+  {c:'2971D',n:'Florida Everglades',h:'#303C28',g:'darks'},
+  {c:'2979D',n:'Gloomy Sky',h:'#686870',g:'darks'},
+  {c:'2984T',n:'Sorcerer',h:'#646468',g:'darks'},
+  {c:'2985D',n:'Tempest Storm',h:'#626268',g:'darks'},
+  {c:'2986D',n:'Midnight Sky',h:'#283050',g:'darks'},
+  {c:'2987C',n:'Copen Blue',h:'#304870',g:'darks'},
+  {c:'2991T',n:'Chinese Blue',h:'#304870',g:'darks'},
+  {c:'2992D',n:'Blue Aster',h:'#2E4268',g:'darks'},
+  {c:'2994C',n:'Navy Blue',h:'#283050',g:'darks'},
+  {c:'2997P',n:'Foggy Night',h:'#585862',g:'darks'},
+  {c:'3000D',n:'Blue Beard',h:'#2E4268',g:'darks'},
+  {c:'3001C',n:'Lights Off',h:'#505058',g:'darks'},
+  {c:'3004P',n:'Sussex',h:'#4C4C54',g:'darks'},
+  {c:'3006D',n:'Sonora Sea',h:'#303848',g:'darks'},
+  {c:'3007D',n:'Eclipse',h:'#3A3840',g:'darks'},
+  {c:'3008C',n:'Coal Mine',h:'#383840',g:'darks'}
+];
+
+const GL={whites:'Whites',yellows:'Yellows & Oranges',greens:'Greens',blues:'Blues & Teals',pinks:'Pinks & Reds',purples:'Purples & Lilacs',neutrals:'Neutrals & Browns',darks:'Darks & Greys'};
+const SP={back:'190,130 510,130 510,315 190,315',left:'0,0 190,130 190,315 0,440',right:'700,0 510,130 510,315 700,440',ceiling:'0,0 700,0 510,130 190,130',floor:'0,440 700,440 510,315 190,315',cabinet:'196,138 504,138 504,320 196,320'};
+const SL={back:'Back Wall',left:'Left Wall',right:'Right Wall',ceiling:'Ceiling',floor:'Floor',cabinet:'Cabinets'};
+const S={s:'back',sc:{back:'#ece5dc',left:'#e3dbd1',right:'#e8e1d7',ceiling:'#f7f4ef',floor:'#b8a882',cabinet:'#f2eeea'},last:null,cat:'all'};
+
+function sel(sf){
+  S.s=sf;
+  document.querySelectorAll('.sbtn').forEach(function(b){b.classList.remove('on');});
+  var btn=document.getElementById('sb-'+sf);
+  if(btn) btn.classList.add('on');
+  document.getElementById('selRing').setAttribute('points',SP[sf]||SP.back);
+  document.getElementById('selRing').setAttribute('opacity','1');
+  document.getElementById('badge').textContent=SL[sf]+' chunni gayi ✓';
+  var h=S.sc[sf],m=C.find(function(x){return x.h.toLowerCase()===h.toLowerCase();});
+  document.getElementById('bigSw').style.background=h;
+  document.getElementById('cName').textContent=m?m.n:'Choose a colour';
+  document.getElementById('cCode').textContent=m?m.c:'Tap a colour chip below';
+  var ba=document.getElementById('btnAll');
+  if(sf==='ceiling'){ba.textContent='Apply Ceiling';ba.style.background='#777';}
+  else if(sf==='floor'){ba.textContent='Apply Floor';ba.style.background='#777';}
+  else if(sf==='cabinet'){ba.textContent='All Cabinets';ba.style.background='var(--accent)';}
+  else{ba.textContent='All Walls';ba.style.background='var(--accent)';}
+  draw();
+}
+
+function paint(code){
+  var m=C.find(function(x){return x.c===code;});
+  if(!m) return;
+  S.sc[S.s]=m.h; S.last=m;
+  if(S.s==='floor') document.getElementById('s-floor').setAttribute('fill',m.h);
+  else if(S.s==='cabinet') document.querySelectorAll('.s-cabinet').forEach(function(el){el.setAttribute('fill',m.h);});
+  else document.getElementById('s-'+S.s).setAttribute('fill',m.h);
+  var dot=document.getElementById('d-'+S.s); if(dot) dot.style.background=m.h;
+  document.getElementById('bigSw').style.background=m.h;
+  document.getElementById('cName').textContent=m.n;
+  document.getElementById('cCode').textContent=m.c;
+  draw();
+  toast('✓ '+m.n+' on '+SL[S.s]);
+}
+
+function applyAll(){
+  if(!S.last){toast('Pick a colour first');return;}
+  var surfs;
+  if(S.s==='ceiling') surfs=['ceiling'];
+  else if(S.s==='floor') surfs=['floor'];
+  else if(S.s==='cabinet') surfs=['cabinet'];
+  else surfs=['back','left','right'];
+  surfs.forEach(function(sf){
+    S.sc[sf]=S.last.h;
+    if(sf==='floor') document.getElementById('s-floor').setAttribute('fill',S.last.h);
+    else if(sf==='cabinet') document.querySelectorAll('.s-cabinet').forEach(function(el){el.setAttribute('fill',S.last.h);});
+    else document.getElementById('s-'+sf).setAttribute('fill',S.last.h);
+    var dot=document.getElementById('d-'+sf); if(dot) dot.style.background=S.last.h;
+  });
+  draw();
+  toast('✓ '+S.last.n+' on '+(surfs.length>1?'all walls':SL[S.s]));
+}
+
+function setRoom(r,btn){
+  document.querySelectorAll('.rtab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  ['living','bedroom','kitchen'].forEach(function(v){
+    document.getElementById('rm-'+v).style.display=v===r?'':'none';
+  });
+  var floors={kitchen:'url(#p-tile)',bedroom:'url(#p-marble)',living:'url(#p-wood)'};
+  var fclr={kitchen:'#d2cdc5',bedroom:'#e8e4de',living:'#b8a882'};
+  document.getElementById('s-floor').setAttribute('fill',floors[r]);
+  S.sc.floor=fclr[r];
+  var dot=document.getElementById('d-floor'); if(dot) dot.style.background=fclr[r];
+  var cabBtn=document.getElementById('sb-cabinet');
+  if(cabBtn) cabBtn.style.display=r==='kitchen'?'':'none';
+  if(r!=='kitchen'&&S.s==='cabinet') sel('back');
+  draw();
+}
+
+function cat(c,btn){
+  S.cat=c;
+  document.querySelectorAll('.pill').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  draw();
+}
+
+function draw(){
+  var q=document.getElementById('si').value.toLowerCase().trim();
+  var f=C.filter(function(x){return (S.cat==='all'||x.g===S.cat)&&(!q||x.n.toLowerCase().includes(q)||x.c.toLowerCase().includes(q));});
+  if(!f.length){document.getElementById('gw').innerHTML='<p style="color:var(--muted);text-align:center;padding:28px;font-size:.78rem">No colours found</p>';return;}
+  var g={};
+  f.forEach(function(x){if(!g[x.g])g[x.g]=[];g[x.g].push(x);});
+  var cur=S.sc[S.s].toLowerCase();
+  var html='';
+  Object.keys(g).forEach(function(k){
+    html+='<div class="grp"><div class="glbl">'+(GL[k]||k)+'</div><div class="grid">';
+    g[k].forEach(function(x){
+      var on=x.h.toLowerCase()===cur?' on':'';
+      html+='<div class="chip'+on+'" style="background:'+x.h+'" title="'+x.n+' ('+x.c+')" onclick="paint(\''+x.c.replace(/'/g,"\\'")+'\')" role="button" aria-label="'+x.n+'"></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('gw').innerHTML=html;
+}
+
+var PRESETS={
+  scandi:{back:'#F5F0EB',left:'#F0EDE6',right:'#ECE9E2',ceiling:'#FAF8F4',floor:'#C8A878',cabinet:'#F2EEEA'},
+  japandi:{back:'#E0D8CC',left:'#D8D0C4',right:'#D4CCC0',ceiling:'#F0ECE4',floor:'#A87858',cabinet:'#D8D0C0'},
+  terra:{back:'#C97355',left:'#C06848',right:'#CA7050',ceiling:'#F0E8DE',floor:'#B09870',cabinet:'#E8D0B8'},
+  navy:{back:'#2A3A4E',left:'#243040',right:'#2E3E52',ceiling:'#F0EDE8',floor:'#C0A878',cabinet:'#3A4A5E'},
+  sage:{back:'#9AAB90',left:'#8A9B80',right:'#92A388',ceiling:'#F2EDE6',floor:'#B8A070',cabinet:'#C8D0BC'},
+  blush:{back:'#E8C8B8',left:'#E0C0B0',right:'#E4C4B4',ceiling:'#FAF5F0',floor:'#C8A060',cabinet:'#F0DDD0'},
+  grey:{back:'#8A8F98',left:'#808590',right:'#868B94',ceiling:'#F4F4F2',floor:'#6B5A48',cabinet:'#D0D2D5'}
+};
+
+function applyPreset(key){
+  var p=PRESETS[key]; if(!p) return;
+  Object.keys(p).forEach(function(sf){
+    S.sc[sf]=p[sf];
+    if(sf==='floor') document.getElementById('s-floor').setAttribute('fill',p[sf]);
+    else if(sf==='cabinet') document.querySelectorAll('.s-cabinet').forEach(function(el){el.setAttribute('fill',p[sf]);});
+    else document.getElementById('s-'+sf).setAttribute('fill',p[sf]);
+    var dot=document.getElementById('d-'+sf); if(dot) dot.style.background=p[sf];
+  });
+  document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('bigSw').style.background=p[S.s]||S.sc[S.s];
+  document.getElementById('cName').textContent=key.charAt(0).toUpperCase()+key.slice(1)+' Preset';
+  document.getElementById('cCode').textContent='Tap a chip to customise';
+  draw();
+  toast('✓ '+key.charAt(0).toUpperCase()+key.slice(1)+' preset applied');
+}
+
+var _t;
+function toast(msg){
+  var e=document.getElementById('toast');
+  e.textContent=msg; e.classList.add('show');
+  clearTimeout(_t); _t=setTimeout(function(){e.classList.remove('show');},2200);
+}
+
+// Init
+sel('back');
+</script>
+</body>
+</html>
